@@ -1,0 +1,27 @@
+version: '3.4'
+ 
+services:
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: mssqlserver 
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Pass@word1
+  codemazeapi:
+    image: raileomor/dotnet/codemazeapi:net8
+    build:
+      context: .
+    ports:
+      - 5221:80
+      - 7159:443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=certpass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/localhost.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https:ro
+    depends_on:
+      - sqlserver
