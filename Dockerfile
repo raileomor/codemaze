@@ -9,24 +9,28 @@ EXPOSE 443
 # copy csproj and restore as distinct layers
 COPY *.sln .
 COPY CompanyEmployees/CompanyEmployees.csproj ./CompanyEmployees/
+COPY CompanyEmployees.Presentation/CompanyEmployees.Presentation.csproj ./CompanyEmployees.Presentation/
 COPY Contracts/Contracts.csproj ./Contracts/
 COPY Entities/Entities.csproj ./Entities/
 COPY LoggerService/LoggerService.csproj ./LoggerService/
 COPY Repository/Repository.csproj ./Repository/
 COPY Service/Service.csproj ./Service/
 COPY Service.Contracts/Service.Contracts.csproj ./Service.Contracts/
+COPY Shared/Shared.csproj ./Shared/
 WORKDIR /app/CompanyEmployees
 RUN dotnet restore
 
 # copy everything else and build app
 WORKDIR /app/
 COPY CompanyEmployees/. ./CompanyEmployees/
+COPY CompanyEmployees.Presentation/. ./CompanyEmployees.Presentation/
 COPY Contracts/. ./Contracts/
 COPY Entities/. ./Entities/
 COPY LoggerService/. ./LoggerService/
 COPY Repository/. ./Repository/
 COPY Service/. ./Service/
 COPY Service.Contracts/. ./Service.Contracts/
+COPY Shared/. ./Shared/
 WORKDIR /app/CompanyEmployees
 RUN dotnet publish -c release -o out --no-restore
 
