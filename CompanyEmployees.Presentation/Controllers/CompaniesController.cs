@@ -50,6 +50,9 @@ public class CompaniesController : ControllerBase
     [HttpPost("collection")]
     public IActionResult CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
     {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
         var result = _service.CompanyService.CreateCompanyCollection(companyCollection);
 
         return CreatedAtRoute("CompanyCollection", new { result.ids }, result.companies);
@@ -68,6 +71,9 @@ public class CompaniesController : ControllerBase
     {
         if (company is null)
             return BadRequest("CompanyForUpdateDto object is null");
+        
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
 
         _service.CompanyService.UpdateCompany(id, company, trackChanges: true);
 
