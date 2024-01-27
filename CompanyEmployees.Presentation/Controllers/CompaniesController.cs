@@ -29,11 +29,9 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> CreateCompany([FromBody] CompanyForCreationDto company)
     {
-        if (company is null)
-            return BadRequest("CompanyForCreationDto object is null");
-
         var createdCompany = await _service.CompanyService.CreateCompanyAsync(company);
 
         return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
@@ -48,11 +46,9 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost("collection")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-
         var result = await _service.CompanyService.CreateCompanyCollectionAsync(companyCollection);
 
         return CreatedAtRoute("CompanyCollection", new { result.ids }, result.companies);
@@ -67,14 +63,9 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] CompanyForUpdateDto company)
     {
-        if (company is null)
-            return BadRequest("CompanyForUpdateDto object is null");
-
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-
         await _service.CompanyService.UpdateCompanyAsync(id, company, trackChanges: true);
 
         return NoContent();

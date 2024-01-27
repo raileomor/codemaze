@@ -26,11 +26,13 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
-builder.Services.AddControllers(config => {
-        config.RespectBrowserAcceptHeader = true;
-        config.ReturnHttpNotAcceptable = true;
-        config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-    }).AddXmlDataContractSerializerFormatters()
+builder.Services.AddScoped<ValidationFilterAttribute>();
+builder.Services.AddControllers(config =>
+{
+    config.RespectBrowserAcceptHeader = true;
+    config.ReturnHttpNotAcceptable = true;
+    config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+}).AddXmlDataContractSerializerFormatters()
     .AddCustomCSVFormatter()
     .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
@@ -60,7 +62,7 @@ app.MapControllers();
 app.Run();
 
 NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
-	new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
-	.Services.BuildServiceProvider()
-	.GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters
-	.OfType<NewtonsoftJsonPatchInputFormatter>().First();
+    new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
+    .Services.BuildServiceProvider()
+    .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters
+    .OfType<NewtonsoftJsonPatchInputFormatter>().First();
