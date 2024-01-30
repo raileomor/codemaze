@@ -1,4 +1,5 @@
 using CompanyEmployees.Presentation.ModelBinders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
@@ -19,6 +20,7 @@ public class CompaniesController : ControllerBase
 
     [HttpGet(Name = "GetCompanies")]
     [EnableRateLimiting("SpecificPolicy")]
+    [Authorize(Roles = "Manager")]
     public async Task<IActionResult> GetCompanies()
     {
         var companies = await _service.CompanyService.GetAllCompaniesAsync(trackChanges: false);
