@@ -13,9 +13,7 @@ public class AuthenticationController : ControllerBase
     public AuthenticationController(IServiceManager service) => _service = service;
 
     [HttpPost]
-
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-
     public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
     {
         var result = await _service.AuthenticationService.RegisterUser(userForRegistration);
@@ -34,17 +32,15 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("login")]
-
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-
     public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)
     {
         if (!await _service.AuthenticationService.ValidateUser(user))
             return Unauthorized();
 
-        return Ok(new
-        {
-            Token = await _service.AuthenticationService.CreateToken()
-        });
+        var tokenDto = await _service.AuthenticationService
+            .CreateToken(populateExp: true);
+
+        return Ok(tokenDto);
     }
 }
