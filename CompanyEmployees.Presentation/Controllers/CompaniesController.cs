@@ -1,3 +1,4 @@
+using CompanyEmployees.Presentation.Extensions;
 using Entities.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -18,8 +19,7 @@ public class CompaniesController : ApiControllerBase
     {
         var baseResult = _service.CompanyService.GetAllCompanies(trackChanges: false);
 
-        var companies = ((ApiOkResponse<IEnumerable<CompanyDto>>)baseResult).Result;
-
+        var companies = baseResult.GetResult<IEnumerable<CompanyDto>>();
         return Ok(companies);
     }
 
@@ -31,8 +31,7 @@ public class CompaniesController : ApiControllerBase
         if (!baseResult.Success)
             return ProcessError(baseResult);
 
-        var company = ((ApiOkResponse<CompanyDto>)baseResult).Result;
-
+        var company = baseResult.GetResult<CompanyDto>();
         return Ok(company);
     }
 }
